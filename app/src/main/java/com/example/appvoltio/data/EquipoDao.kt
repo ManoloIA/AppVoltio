@@ -1,0 +1,15 @@
+package com.example.appvoltio.data
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
+import com.example.appvoltio.model.Equipo
+
+@Dao
+interface EquipoDao {
+
+    @Insert
+    suspend fun insertar(equipo: Equipo)
+
+    @Query("SELECT * FROM equipo")
+    suspend fun obtenerTodos(): List<Equipo>
+}
