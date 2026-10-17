@@ -22,4 +22,18 @@ class RegistroEquipoViewModel : ViewModel(){
     fun onUbicacionChange(valor: String){
         _uiState.update {it.copy(ubicacion = valor)}
     }
+
+    private fun validar(): Boolean {
+        val estado = _uiState.value
+
+        val errores = RegistroEquipoErrores(
+            codigo = if (estado.codigo.isBlank()) "Campo obligatorio" else null,
+            tipo = if (estado.tipo.isBlank()) "Campo obligatorio" else  null,
+            ubicacion = if (estado.ubicacion.isBlank()) "Campo obligatorio" else null
+        )
+
+        _uiState.update {it.copy(errores = errores) }
+
+        return errores.codigo == null && errores.tipo == null && errores.ubicacion == null
+    }
 }
