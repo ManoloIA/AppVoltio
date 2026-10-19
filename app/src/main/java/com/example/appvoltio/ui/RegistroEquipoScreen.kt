@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -15,7 +16,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
-
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 @Composable
 fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
     val estado by viewModel.uiState.collectAsState()
@@ -41,6 +49,12 @@ fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
             modifier = Modifier.fillMaxWidth()
         )
 
+        SelectorTipo(
+            tipoSeleccionado = estado.tipo,
+            error = estado.errores.tipo,
+            onTipoSeleccionado = { viewModel.onTipoChange(it)}
+        )
+
         OutlinedTextField(
             value = estado.ubicacion,
             onValueChange = { viewModel.onUbicacionChange(it) },
@@ -57,5 +71,51 @@ fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
         ) {
             Text("Guardar equipo")
         }
+    }
+}
+
+private val tiposDeEquipo = listOf("Transformador", "Relé de protección", "Celda", "Cable")
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SelectorTipo(
+    tipoSeleccionado: String,
+    error: String?,
+    onTipoSeleccionado: (String) -> Unit
+) {
+    var expandido by remember { mutableStateOf(false)}
+
+    ExposedDropdownMenuBox(
+        expanded = expandido,
+        onExpandedChange = { expandido = it}
+    ) {
+        OutlinedTextField(
+            value = tipoSeleccionado,
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Tipo de equipo") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandido) },
+            isError = error != null,
+            supportingText = { error?.let { Text(it) } },
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expandido,
+            onDismissRequest = { expandido = false}
+        ) {
+            tiposDeEquipo.forEach { tipo ->
+                DropdownMenuItem(
+                    text = { Text(tipo) },
+                    onClick = {
+                        onTipoSeleccionado(tipo)
+                        expandido = false
+                    }
+                )
+            }
+        }
+
     }
 }
