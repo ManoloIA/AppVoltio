@@ -1,7 +1,6 @@
 package com.example.appvoltio.data
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 import com.example.appvoltio.model.Equipo
 
 @Dao
