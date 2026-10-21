@@ -24,6 +24,9 @@ import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Icon
 @Composable
 fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
     val estado by viewModel.uiState.collectAsState()
@@ -44,6 +47,11 @@ fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
             onValueChange = {viewModel.onCodigoChange(it) },
             label = {Text("Código del equipo") },
             isError = estado.errores.codigo != null,
+            trailingIcon = {
+                if (estado.errores.codigo != null) {
+                    Icon(Icons.Filled.Warning, contentDescription = "Error")
+                }
+            },
             supportingText = { estado.errores.codigo?.let { Text(it) } },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -60,6 +68,11 @@ fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
             onValueChange = { viewModel.onUbicacionChange(it) },
             label = { Text("Ubicación en la instalación del cliente") },
             isError = estado.errores.ubicacion != null,
+            trailingIcon = {
+                if (estado.errores.ubicacion != null) {
+                    Icon(Icons.Filled.Warning, contentDescription = "Error")
+                }
+            },
             supportingText = { estado.errores.ubicacion?.let { Text(it) } },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
