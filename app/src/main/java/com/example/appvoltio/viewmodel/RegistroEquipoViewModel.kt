@@ -16,15 +16,18 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
     val uiState: StateFlow<RegistroEquipoUiState> = _uiState.asStateFlow()
 
     fun onCodigoChange(valor: String){
-        _uiState.update { it.copy(codigo = valor)}
+        _uiState.update { it.copy(codigo = valor, errores = it.errores.copy(codigo = null))
+        }
     }
 
     fun onTipoChange(valor: String){
-        _uiState.update { it.copy(tipo = valor)}
+        _uiState.update { it.copy(tipo = valor, errores = it.errores.copy(tipo = null))
+        }
     }
 
     fun onUbicacionChange(valor: String){
-        _uiState.update {it.copy(ubicacion = valor)}
+        _uiState.update {it.copy(ubicacion = valor, errores = it.errores.copy(ubicacion = null))
+        }
     }
 
     private fun validar(): Boolean {
