@@ -14,11 +14,17 @@ import com.example.appvoltio.ui.navigation.AppNavigation
 import com.example.appvoltio.ui.theme.AppVoltioTheme
 import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
 import com.example.appvoltio.viewmodel.RegistroEquipoViewModelFactory
+import com.example.appvoltio.viewmodel.ListaEquiposViewModel
+import com.example.appvoltio.viewmodel.ListaEquiposViewModelFactory
 
 class MainActivity : ComponentActivity() {
 
     private val registroEquipoViewModel: RegistroEquipoViewModel by viewModels {
         RegistroEquipoViewModelFactory(application)
+    }
+
+    private val listaEquiposViewModel: ListaEquiposViewModel by viewModels {
+        ListaEquiposViewModelFactory(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +34,7 @@ class MainActivity : ComponentActivity() {
             AppVoltioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        AppNavigation(registroEquipoViewModel)
+                        AppNavigation(registroEquipoViewModel, listaEquiposViewModel)
                     }
                 }
             }
