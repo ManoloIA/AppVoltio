@@ -28,7 +28,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 @Composable
-fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
+fun RegistroEquipoScreen(
+    viewModel: RegistroEquipoViewModel,
+    onGuardado: () -> Unit ={}
+) {
     val estado by viewModel.uiState.collectAsState()
 
     Column(
@@ -79,7 +82,7 @@ fun RegistroEquipoScreen(viewModel: RegistroEquipoViewModel){
         )
 
         Button(
-            onClick = { viewModel.guardar() },
+            onClick = { viewModel.guardar(onGuardado) },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Guardar equipo")

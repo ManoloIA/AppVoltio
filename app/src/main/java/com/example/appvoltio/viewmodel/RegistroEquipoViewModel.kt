@@ -44,7 +44,7 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
         return errores.codigo == null && errores.tipo == null && errores.ubicacion == null
     }
 
-    fun guardar(){
+    fun guardar(alGuardar: () -> Unit = {}) {
         if (!validar()) return
 
         val estado = _uiState.value
@@ -57,6 +57,7 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
         viewModelScope.launch {
             repository.guardar(equipo)
             _uiState.value = RegistroEquipoUiState()
+            alGuardar()
         }
     }
 }

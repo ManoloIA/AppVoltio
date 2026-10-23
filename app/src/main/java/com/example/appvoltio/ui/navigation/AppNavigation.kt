@@ -67,7 +67,10 @@ fun AppNavigation(
         }
 
         composable(Screen.RegistrarEquipo.route) {
-            RegistroEquipoScreen(registroEquipoViewModel)
+            RegistroEquipoScreen(
+               viewModel = registroEquipoViewModel,
+                onGuardado = { navController.popBackStack() }
+            )
         }
 
         composable(
