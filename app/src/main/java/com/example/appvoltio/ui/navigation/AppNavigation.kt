@@ -9,9 +9,14 @@ import androidx.navigation.navArgument
 import com.example.appvoltio.ui.RegistroEquipoScreen
 import com.example.appvoltio.ui.components.PantallaTemporal
 import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
+import com.example.appvoltio.ui.ListaEquiposScreen
+import com.example.appvoltio.viewmodel.ListaEquiposViewModel
 
 @Composable
-fun AppNavigation(registroEquipoViewModel: RegistroEquipoViewModel) {
+fun AppNavigation(
+    registroEquipoViewModel: RegistroEquipoViewModel,
+    listaEquiposViewModel: ListaEquiposViewModel
+) {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Screen.Login.route) {
@@ -70,21 +75,18 @@ fun AppNavigation(registroEquipoViewModel: RegistroEquipoViewModel) {
             arguments = listOf(navArgument("seleccionar") { type = NavType.BoolType })
         ) { backStackEntry ->
             val seleccionar = backStackEntry.arguments?.getBoolean("seleccionar") ?: false
-            PantallaTemporal(
-                titulo = "Lista de equipos",
-                acciones = listOf(
-                    "Equipo de ejemplo (id 1)" to {
-                        if (seleccionar) {
-                            navController.navigate(Screen.NuevaPrueba.createRoute(1))
-                        } else {
-                            navController.navigate(Screen.FichaEquipo.createRoute(1))
-                        }
-                    },
-                    "Registrar equipo" to {
-                        navController.navigate(Screen.RegistrarEquipo.route)
-                    },
-                    "Volver" to { navController.popBackStack() }
-                )
+            ListaEquiposScreen(
+                viewModel = listaEquiposViewModel,
+                onEquipoClick = { equipoId ->
+                    if (seleccionar) {
+                        navController.navigate(Screen.NuevaPrueba.createRoute(equipoId))
+                    } else {
+                        navController.navigate(Screen.FichaEquipo.createRoute(equipoId))
+                    }
+                },
+                onRegistrarClick = {
+                    navController.navigate(Screen.RegistrarEquipo.route)
+                }
             )
         }
 

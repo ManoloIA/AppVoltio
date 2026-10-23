@@ -14,6 +14,8 @@ Kotlin, Jetpack Compose, Material Design 3, arquitectura MVVM, Room (SQLite).
 ## Funcionalidades implementadas
 - Registro de equipos con validación de campos por formulario.
 - Almacenamiento local de equipos con Room.
+- Navegación entre pantallas.
+- Lista de equipos con búsqueda por código o ubicación.
 
 ## Cómo ejecutar
 1. Clonar el repositorio.
