@@ -29,6 +29,23 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import com.example.appvoltio.ui.components.ImagenInteligente
+import java.io.File
 
 @Composable
 fun RegistroEquipoScreen(
@@ -36,6 +53,29 @@ fun RegistroEquipoScreen(
     onGuardado: () -> Unit ={}
 ) {
     val estado by viewModel.uiState.collectAsState()
+
+    val context = LocalContext.current
+    var uriTemporal by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+    val camaraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { fotoTomada ->
+        if (fotoTomada) {
+            uriTemporal?.let { viewModel.onFotoCapturada(it.toString()) }
+        }
+    }
+
+    fun abrirCamara() {
+        val uri = crearUriFoto(context)
+        uriTemporal = uri
+        camaraLauncher.launch(uri)
+    }
+
+    val permisoLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        if (concedido) abrirCamara() else viewModel.onPermisoCamaraDenegado()
+    }
 
     Column(
         modifier = Modifier
@@ -83,6 +123,50 @@ fun RegistroEquipoScreen(
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
+
+        Text(
+            text = "Foto de la placa (opcional)",
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        ImagenInteligente(
+            fotoUri = estado.fotoUri,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(180.dp)
+        )
+
+        OutlinedButton(
+            onClick = {
+                val permisoConcedido = ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED
+                if (permisoConcedido) {
+                    abrirCamara()
+                } else {
+                    permisoLauncher.launch(Manifest.permission.CAMERA)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (estado.fotoUri == null) "Tomar foto" else "Volver a tomar foto")
+        }
+
+        estado.errores.foto?.let { mensaje ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.Warning,
+                    contentDescription = "Error",
+                    tint = MaterialTheme.colorScheme.error
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = mensaje,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
 
         Button(
             onClick = { viewModel.guardar(onGuardado) },
@@ -137,4 +221,10 @@ private fun SelectorTipo(
         }
 
     }
+}
+
+private fun crearUriFoto(context: Context): Uri {
+    val carpeta = File(context.filesDir, "fotos").apply { mkdirs() }
+    val archivo = File(carpeta, "placa_${System.currentTimeMillis()}.jpg")
+    return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
 }
