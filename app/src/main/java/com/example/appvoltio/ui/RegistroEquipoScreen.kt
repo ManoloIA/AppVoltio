@@ -27,6 +27,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+
 @Composable
 fun RegistroEquipoScreen(
     viewModel: RegistroEquipoViewModel,
@@ -37,8 +40,8 @@ fun RegistroEquipoScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
     ){
         Text(
             text = "Registrar equipo",
