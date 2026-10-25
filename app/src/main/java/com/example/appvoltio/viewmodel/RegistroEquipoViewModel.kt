@@ -30,6 +30,16 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
         }
     }
 
+    fun onFotoCapturada(uri: String) {
+        _uiState.update { it.copy(fotoUri = uri, errores = it.errores.copy(foto = null)) }
+    }
+
+    fun onPermisoCamaraDenegado() {
+        _uiState.update {
+            it.copy(errores = it.errores.copy(foto = "Se necesita el permiso de cámara para tomar la foto"))
+        }
+    }
+
     private fun validar(): Boolean {
         val estado = _uiState.value
 
@@ -51,7 +61,8 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
         val equipo = Equipo(
             codigo = estado.codigo.trim(),
             tipo = estado.tipo,
-            ubicacion = estado.ubicacion.trim()
+            ubicacion = estado.ubicacion.trim(),
+            fotoUri = estado.fotoUri
         )
 
         viewModelScope.launch {
