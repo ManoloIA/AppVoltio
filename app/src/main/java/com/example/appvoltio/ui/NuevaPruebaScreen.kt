@@ -20,6 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.appvoltio.viewmodel.NuevaPruebaViewModel
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun NuevaPruebaScreen(
@@ -90,4 +98,51 @@ fun NuevaPruebaScreen(
             Text("Guardar prueba")
         }
     }
+}
+
+private val unidades = listOf("MΩ", "kΩ", "Ω", "V", "kV", "A", "mA")
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SelectorUnidad(
+    unidadSeleccionada: String,
+    error: String?,
+    onUnidadSeleccionada: (String) -> Unit
+) {
+    var expandido by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expandido,
+        onExpandedChange = { expandido = it }
+    ){
+        OutlinedTextField(
+            value= unidadSeleccionada,
+            onValueChange =  {},
+            readOnly = true,
+            label = { Text("Unidad") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandido) },
+            isError = error != null,
+            supportingText = { error?.let { Text(it) } },
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                .fillMaxWidth()
+
+        )
+        ExposedDropdownMenu(
+            expanded = expandido,
+            onDismissRequest = { expandido = false}
+        ) {
+            unidades.forEach { unidad ->
+                DropdownMenuItem(
+                    text = { Text(unidad) },
+                    onClick = {
+                        onUnidadSeleccionada(unidad)
+                        expandido = false
+                    }
+                )
+            }
+        }
+    }
+
+
 }
