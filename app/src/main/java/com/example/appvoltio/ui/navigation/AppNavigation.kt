@@ -1,5 +1,11 @@
 package com.example.appvoltio.ui.navigation
 
+import android.app.Application
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.appvoltio.ui.NuevaPruebaScreen
+import com.example.appvoltio.viewmodel.NuevaPruebaViewModel
+import com.example.appvoltio.viewmodel.NuevaPruebaViewModelFactory
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -114,14 +120,13 @@ fun AppNavigation(
             arguments = listOf(navArgument("equipoId") { type = NavType.IntType })
         ) { backStackEntry ->
             val equipoId = backStackEntry.arguments?.getInt("equipoId") ?: 0
-            PantallaTemporal(
-                titulo = "Nueva prueba (equipo $equipoId)",
-                acciones = listOf(
-                    "Guardar prueba" to {
-                        navController.navigate(Screen.Resumen.createRoute(1))
-                    },
-                    "Volver" to { navController.popBackStack() }
-                )
+            val app = LocalContext.current.applicationContext as Application
+            val nuevaPruebaViewModel: NuevaPruebaViewModel = viewModel(
+                factory = NuevaPruebaViewModelFactory(app, equipoId)
+            )
+            NuevaPruebaScreen(
+                viewModel = nuevaPruebaViewModel,
+                onGuardado = { navController.popBackStack()}
             )
         }
 
