@@ -9,6 +9,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -16,24 +21,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.appvoltio.viewmodel.NuevaPruebaViewModel
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 
 @Composable
 fun NuevaPruebaScreen(
     viewModel: NuevaPruebaViewModel,
     onGuardado: () -> Unit = {}
-){
+) {
     val estado by viewModel.uiState.collectAsState()
 
     Column(
@@ -57,25 +57,16 @@ fun NuevaPruebaScreen(
                     Icon(Icons.Filled.Warning, contentDescription = "Error")
                 }
             },
-            supportingText = {estado.errores.valorMedicion?.let { Text(it) } },
+            supportingText = { estado.errores.valorMedicion?.let { Text(it) } },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
-        OutlinedTextField(
-            value = estado.unidad,
-            onValueChange = { viewModel.onUnidadChange(it) },
-            label = { Text("Unidad (por ejemplo MΩ, V, A)") },
-            isError = estado.errores.unidad != null,
-            trailingIcon = {
-                if (estado.errores.unidad != null) {
-                    Icon(Icons.Filled.Warning, contentDescription = "Error")
-                }
-            },
-            supportingText = { estado.errores.unidad?.let { Text(it)} },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+        SelectorUnidad(
+            unidadSeleccionada = estado.unidad,
+            error = estado.errores.unidad,
+            onUnidadSeleccionada = { viewModel.onUnidadChange(it) }
         )
 
         OutlinedTextField(
@@ -87,7 +78,7 @@ fun NuevaPruebaScreen(
         )
 
         Text(
-            text = "la fecha y la hora se registran automáticamente al guardar.",
+            text = "La fecha y la hora se registran automáticamente al guardar.",
             style = MaterialTheme.typography.bodySmall
         )
 
@@ -114,10 +105,10 @@ private fun SelectorUnidad(
     ExposedDropdownMenuBox(
         expanded = expandido,
         onExpandedChange = { expandido = it }
-    ){
+    ) {
         OutlinedTextField(
-            value= unidadSeleccionada,
-            onValueChange =  {},
+            value = unidadSeleccionada,
+            onValueChange = {},
             readOnly = true,
             label = { Text("Unidad") },
             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandido) },
@@ -126,11 +117,11 @@ private fun SelectorUnidad(
             modifier = Modifier
                 .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
                 .fillMaxWidth()
-
         )
+
         ExposedDropdownMenu(
             expanded = expandido,
-            onDismissRequest = { expandido = false}
+            onDismissRequest = { expandido = false }
         ) {
             unidades.forEach { unidad ->
                 DropdownMenuItem(
@@ -143,6 +134,4 @@ private fun SelectorUnidad(
             }
         }
     }
-
-
 }
