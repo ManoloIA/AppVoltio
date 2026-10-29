@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.appvoltio.model.Equipo
 import com.example.appvoltio.model.Prueba
 
-@Database(entities = [Equipo::class, Prueba::class], version = 2, exportSchema = false)
+@Database(entities = [Equipo::class, Prueba::class], version = 3, exportSchema = false)
 
 abstract class AppDatabase : RoomDatabase() {
 

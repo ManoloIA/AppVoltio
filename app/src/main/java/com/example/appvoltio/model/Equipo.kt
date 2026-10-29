@@ -10,5 +10,8 @@ data class Equipo(
     val codigo: String,
     val tipo: String,
     val ubicacion: String,
-    val fotoUri: String? = null
+    val fotoUri: String? = null,
+    val latitud: Double? = null,
+    val longitud: Double? = null
+
 )
