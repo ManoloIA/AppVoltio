@@ -82,6 +82,7 @@ fun RegistroEquipoScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ){
         Text(
             text = "Registrar equipo",
