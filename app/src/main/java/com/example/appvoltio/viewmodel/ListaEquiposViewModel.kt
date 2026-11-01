@@ -15,7 +15,7 @@ class ListaEquiposViewModel(private val repository: EquipoRepository) : ViewMode
     private val _uiState = MutableStateFlow(ListaEquiposUiState())
     val uiState: StateFlow<ListaEquiposUiState> = _uiState.asStateFlow()
 
-    // Todos los equipos guardados, sin filtrar
+
     private var todos: List<Equipo> = emptyList()
 
     fun cargar() {
