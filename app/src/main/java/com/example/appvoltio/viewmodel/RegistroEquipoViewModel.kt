@@ -40,6 +40,24 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
         }
     }
 
+    fun onUbicacionGpsObtenida(latitud: Double, longitud: Double) {
+        _uiState.update {
+            it.copy(latitud = latitud, longitud = longitud, errores = it.errores.copy(gps = null))
+        }
+    }
+
+    fun onUbicacionGpsNoDisponible(){
+        _uiState.update {
+            it.copy(errores = it.errores.copy(gps = "No se pudo obtener la ubicación. Revisa que el GPS esté activado."))
+        }
+    }
+
+    fun onPermisoUbicacionDenegado() {
+        _uiState.update {
+            it.copy(errores = it.errores.copy(gps = "Se necesita el permiso de ubicación para registrar el GPS"))
+        }
+    }
+
     private fun validar(): Boolean {
         val estado = _uiState.value
 
@@ -62,7 +80,9 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
             codigo = estado.codigo.trim(),
             tipo = estado.tipo,
             ubicacion = estado.ubicacion.trim(),
-            fotoUri = estado.fotoUri
+            fotoUri = estado.fotoUri,
+            latitud = estado.latitud,
+            longitud = estado.longitud
         )
 
         viewModelScope.launch {
