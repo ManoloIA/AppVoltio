@@ -2,7 +2,6 @@ package com.example.appvoltio.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-
 val AzulVoltio = Color(0xFF1B4F72)
 val AzulVoltioContenedor = Color(0xFFD6E6F2)
 val AmbarVoltio = Color(0xFFF2A900)
@@ -12,7 +11,6 @@ val SuperficieClara = Color(0xFFFFFFFF)
 val SuperficieVarianteClara = Color(0xFFE9EEF3)
 val TextoSecundarioClaro = Color(0xFF4B5B6B)
 val ErrorClaro = Color(0xFFB3261E)
-
 
 val AzulVoltioOscuro = Color(0xFF8CC3E8)
 val AzulVoltioTextoOscuro = Color(0xFF00344F)
