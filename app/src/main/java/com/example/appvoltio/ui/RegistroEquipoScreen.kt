@@ -46,6 +46,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.appvoltio.ui.components.ImagenInteligente
 import java.io.File
+import android.annotation.SuppressLint
+import android.location.Location
+import android.location.LocationManager
+import androidx.compose.material.icons.filled.LocationOn
 
 @Composable
 fun RegistroEquipoScreen(
@@ -75,6 +79,22 @@ fun RegistroEquipoScreen(
         ActivityResultContracts.RequestPermission()
     ) { concedido ->
         if (concedido) abrirCamara() else viewModel.onPermisoCamaraDenegado()
+    }
+
+    fun registrarUbicacion() {
+        obtenerUbicacion(context) { ubicacion ->
+            if (ubicacion != null) {
+                viewModel.onUbicacionGpsObtenida(ubicacion.latitude, ubicacion.longitude)
+            } else {
+                viewModel.onUbicacionGpsNoDisponible()
+            }
+        }
+    }
+
+    val permisoUbicacionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        if (concedido) registrarUbicacion() else viewModel.onPermisoUbicacionDenegado()
     }
 
     Column(
@@ -124,6 +144,54 @@ fun RegistroEquipoScreen(
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
+
+
+        OutlinedButton(
+            onClick = {
+                val permisoConcedido = ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+                if (permisoConcedido) {
+                    registrarUbicacion()
+                } else {
+                    permisoUbicacionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(if (estado.latitud == null) "Registrar ubicación GPS" else "Actualizar ubicación GPS")
+        }
+
+        if (estado.latitud != null && estado.longitud != null) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.LocationOn,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = "Ubicación GPS registrada: %.5f, %.5f".format(estado.latitud, estado.longitud),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+
+        estado.errores.gps?.let { mensaje ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Filled.Warning,
+                    contentDescription = "Error",
+                    tint = MaterialTheme.colorScheme.error
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = mensaje,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
 
         Text(
             text = "Foto de la placa (opcional)",
@@ -228,4 +296,14 @@ private fun crearUriFoto(context: Context): Uri {
     val carpeta = File(context.filesDir, "fotos").apply { mkdirs() }
     val archivo = File(carpeta, "placa_${System.currentTimeMillis()}.jpg")
     return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", archivo)
+}
+
+@SuppressLint("MissingPermission")
+private fun obtenerUbicacion(context: Context, onResultado: (Location?) -> Unit) {
+    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    locationManager.getCurrentLocation(
+        LocationManager.GPS_PROVIDER,
+        null,
+        ContextCompat.getMainExecutor(context)
+    ) { ubicacion -> onResultado(ubicacion) }
 }

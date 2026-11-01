@@ -46,13 +46,13 @@ class RegistroEquipoViewModel(private val repository: EquipoRepository) : ViewMo
         }
     }
 
-    fun obUbicacionGpsNoDisponible(){
+    fun onUbicacionGpsNoDisponible(){
         _uiState.update {
             it.copy(errores = it.errores.copy(gps = "No se pudo obtener la ubicación. Revisa que el GPS esté activado."))
         }
     }
 
-    fun onPermisoUbicacionDegenedo() {
+    fun onPermisoUbicacionDenegado() {
         _uiState.update {
             it.copy(errores = it.errores.copy(gps = "Se necesita el permiso de ubicación para registrar el GPS"))
         }
