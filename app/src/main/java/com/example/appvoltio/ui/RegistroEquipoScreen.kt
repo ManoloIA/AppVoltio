@@ -1,60 +1,65 @@
 package com.example.appvoltio.ui
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.Icon
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.appvoltio.ui.components.ImagenInteligente
+import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
 import java.io.File
-import android.annotation.SuppressLint
-import android.location.Location
-import android.location.LocationManager
-import androidx.compose.material.icons.filled.LocationOn
 
 @Composable
 fun RegistroEquipoScreen(
     viewModel: RegistroEquipoViewModel,
-    onGuardado: () -> Unit ={}
+    onGuardado: () -> Unit = {}
 ) {
     val estado by viewModel.uiState.collectAsState()
 
@@ -103,7 +108,7 @@ fun RegistroEquipoScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
-    ){
+    ) {
         Text(
             text = "Registrar equipo",
             style = MaterialTheme.typography.headlineSmall
@@ -111,8 +116,8 @@ fun RegistroEquipoScreen(
 
         OutlinedTextField(
             value = estado.codigo,
-            onValueChange = {viewModel.onCodigoChange(it) },
-            label = {Text("Código del equipo") },
+            onValueChange = { viewModel.onCodigoChange(it) },
+            label = { Text("Código del equipo") },
             isError = estado.errores.codigo != null,
             trailingIcon = {
                 if (estado.errores.codigo != null) {
@@ -127,7 +132,7 @@ fun RegistroEquipoScreen(
         SelectorTipo(
             tipoSeleccionado = estado.tipo,
             error = estado.errores.tipo,
-            onTipoSeleccionado = { viewModel.onTipoChange(it)}
+            onTipoSeleccionado = { viewModel.onTipoChange(it) }
         )
 
         OutlinedTextField(
@@ -145,7 +150,6 @@ fun RegistroEquipoScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-
         OutlinedButton(
             onClick = {
                 val permisoConcedido = ContextCompat.checkSelfPermission(
@@ -162,7 +166,11 @@ fun RegistroEquipoScreen(
             Text(if (estado.latitud == null) "Registrar ubicación GPS" else "Actualizar ubicación GPS")
         }
 
-        if (estado.latitud != null && estado.longitud != null) {
+        AnimatedVisibility(
+            visible = estado.latitud != null && estado.longitud != null,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Filled.LocationOn,
@@ -177,7 +185,11 @@ fun RegistroEquipoScreen(
             }
         }
 
-        estado.errores.gps?.let { mensaje ->
+        AnimatedVisibility(
+            visible = estado.errores.gps != null,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Filled.Warning,
@@ -186,7 +198,7 @@ fun RegistroEquipoScreen(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = mensaje,
+                    text = estado.errores.gps ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -221,7 +233,11 @@ fun RegistroEquipoScreen(
             Text(if (estado.fotoUri == null) "Tomar foto" else "Volver a tomar foto")
         }
 
-        estado.errores.foto?.let { mensaje ->
+        AnimatedVisibility(
+            visible = estado.errores.foto != null,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Filled.Warning,
@@ -230,7 +246,7 @@ fun RegistroEquipoScreen(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = mensaje,
+                    text = estado.errores.foto ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
@@ -255,11 +271,11 @@ private fun SelectorTipo(
     error: String?,
     onTipoSeleccionado: (String) -> Unit
 ) {
-    var expandido by remember { mutableStateOf(false)}
+    var expandido by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expandido,
-        onExpandedChange = { expandido = it}
+        onExpandedChange = { expandido = it }
     ) {
         OutlinedTextField(
             value = tipoSeleccionado,
@@ -276,7 +292,7 @@ private fun SelectorTipo(
 
         ExposedDropdownMenu(
             expanded = expandido,
-            onDismissRequest = { expandido = false}
+            onDismissRequest = { expandido = false }
         ) {
             tiposDeEquipo.forEach { tipo ->
                 DropdownMenuItem(
@@ -288,7 +304,6 @@ private fun SelectorTipo(
                 )
             }
         }
-
     }
 }
 

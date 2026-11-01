@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.appvoltio.viewmodel.ListaEquiposViewModel
@@ -56,7 +57,12 @@ fun ListaEquiposScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Box(modifier = Modifier.weight(1f)) {
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = if (estado.equipos.isEmpty()) Alignment.Center else Alignment.TopStart
+        ) {
             if (estado.equipos.isEmpty()) {
                 Text(
                     text = if (estado.busqueda.isBlank()) {
@@ -68,10 +74,12 @@ fun ListaEquiposScreen(
                 )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    items(estado.equipos) { equipo ->
+                    items(estado.equipos, key = { it.id }) { equipo ->
                         Card(
                             onClick = { onEquipoClick(equipo.id) },
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItem()
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
