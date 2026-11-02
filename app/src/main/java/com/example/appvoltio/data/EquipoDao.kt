@@ -11,4 +11,7 @@ interface EquipoDao {
 
     @Query("SELECT * FROM equipo")
     suspend fun obtenerTodos(): List<Equipo>
+
+    @Query("SELECT * FROM equipo WHERE id = :id")
+    fun observarPorId(id: Int): Flow<Equipo?>
 }
