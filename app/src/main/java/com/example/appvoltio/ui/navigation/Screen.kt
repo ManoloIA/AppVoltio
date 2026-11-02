@@ -2,7 +2,9 @@ package com.example.appvoltio.ui.navigation
 
 sealed class Screen(val route: String) {
     object Login : Screen("login")
-    object Inicio : Screen("inicio")
+    object Inicio : Screen("inicio/{esAdmin}") {
+        fun createRoute(esAdmin: Boolean) = "inicio/$esAdmin"
+    }
     object CrearUsuario : Screen("crear_usuario")
     object RegistrarEquipo : Screen("registrar_equipo")
 
