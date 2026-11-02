@@ -23,6 +23,9 @@ import com.example.appvoltio.viewmodel.LoginViewModelFactory
 import com.example.appvoltio.ui.CrearUsuarioScreen
 import com.example.appvoltio.viewmodel.CrearUsuarioViewModel
 import com.example.appvoltio.viewmodel.CrearUsuarioViewModelFactory
+import com.example.appvoltio.ui.FichaEquipoScreen
+import com.example.appvoltio.viewmodel.FichaEquipoViewModel
+import com.example.appvoltio.viewmodel.FichaEquipoViewModelFactory
 
 @Composable
 fun AppNavigation(
@@ -87,7 +90,7 @@ fun AppNavigation(
 
         composable(Screen.RegistrarEquipo.route) {
             RegistroEquipoScreen(
-               viewModel = registroEquipoViewModel,
+                viewModel = registroEquipoViewModel,
                 onGuardado = { navController.popBackStack() }
             )
         }
@@ -117,14 +120,15 @@ fun AppNavigation(
             arguments = listOf(navArgument("equipoId") { type = NavType.IntType })
         ) { backStackEntry ->
             val equipoId = backStackEntry.arguments?.getInt("equipoId") ?: 0
-            PantallaTemporal(
-                titulo = "Ficha del equipo $equipoId",
-                acciones = listOf(
-                    "Nueva prueba" to {
-                        navController.navigate(Screen.NuevaPrueba.createRoute(equipoId))
-                    },
-                    "Volver" to { navController.popBackStack() }
-                )
+            val app = LocalContext.current.applicationContext as Application
+            val fichaEquipoViewModel: FichaEquipoViewModel = viewModel(
+                factory = FichaEquipoViewModelFactory(app, equipoId)
+            )
+            FichaEquipoScreen(
+                viewModel = fichaEquipoViewModel,
+                onNuevaPrueba = {
+                    navController.navigate(Screen.NuevaPrueba.createRoute(equipoId))
+                }
             )
         }
 
