@@ -20,6 +20,9 @@ import com.example.appvoltio.viewmodel.ListaEquiposViewModel
 import com.example.appvoltio.ui.LoginScreen
 import com.example.appvoltio.viewmodel.LoginViewModel
 import com.example.appvoltio.viewmodel.LoginViewModelFactory
+import com.example.appvoltio.ui.CrearUsuarioScreen
+import com.example.appvoltio.viewmodel.CrearUsuarioViewModel
+import com.example.appvoltio.viewmodel.CrearUsuarioViewModelFactory
 
 @Composable
 fun AppNavigation(
@@ -72,9 +75,13 @@ fun AppNavigation(
         }
 
         composable(Screen.CrearUsuario.route) {
-            PantallaTemporal(
-                titulo = "Crear usuario",
-                acciones = listOf("Volver" to { navController.popBackStack() })
+            val app = LocalContext.current.applicationContext as Application
+            val crearUsuarioViewModel: CrearUsuarioViewModel = viewModel(
+                factory = CrearUsuarioViewModelFactory(app)
+            )
+            CrearUsuarioScreen(
+                viewModel = crearUsuarioViewModel,
+                onVolver = { navController.popBackStack() }
             )
         }
 
