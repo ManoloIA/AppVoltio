@@ -17,6 +17,9 @@ import com.example.appvoltio.ui.components.PantallaTemporal
 import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
 import com.example.appvoltio.ui.ListaEquiposScreen
 import com.example.appvoltio.viewmodel.ListaEquiposViewModel
+import com.example.appvoltio.ui.LoginScreen
+import com.example.appvoltio.viewmodel.LoginViewModel
+import com.example.appvoltio.viewmodel.LoginViewModelFactory
 
 @Composable
 fun AppNavigation(
@@ -28,19 +31,22 @@ fun AppNavigation(
     NavHost(navController = navController, startDestination = Screen.Login.route) {
 
         composable(Screen.Login.route) {
-            PantallaTemporal(
-                titulo = "Login",
-                acciones = listOf(
-                    "Ingresar" to {
-                        navController.navigate(Screen.Inicio.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+            val app = LocalContext.current.applicationContext as Application
+            val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(app))
+            LoginScreen(
+                viewModel = loginViewModel,
+                onIngresoExitoso = { esAdmin ->
+                    navController.navigate(Screen.Inicio.createRoute(esAdmin)) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
                     }
-                )
+                }
             )
         }
 
-        composable(Screen.Inicio.route) {
+        composable(
+            route = Screen.Inicio.route,
+            arguments = listOf(navArgument("esAdmin") { type = NavType.BoolType })
+        ) {
             PantallaTemporal(
                 titulo = "Inicio",
                 acciones = listOf(
