@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.appvoltio.ui.components.CampoClave
 import com.example.appvoltio.viewmodel.LoginViewModel
+import androidx.compose.animation.AnimatedVisibility
 
 @Composable
 fun LoginScreen(
@@ -72,7 +73,7 @@ fun LoginScreen(
             error = estado.errores.clave
         )
 
-        estado.errores.general?.let { mensaje ->
+        AnimatedVisibility(visible = estado.errores.general != null) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     Icons.Filled.Warning,
@@ -81,7 +82,7 @@ fun LoginScreen(
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = mensaje,
+                    text = estado.errores.general ?: "",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium
                 )
