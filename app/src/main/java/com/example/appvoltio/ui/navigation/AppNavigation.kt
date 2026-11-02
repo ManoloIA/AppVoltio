@@ -146,24 +146,5 @@ fun AppNavigation(
                 onGuardado = { navController.popBackStack()}
             )
         }
-
-        composable(
-            route = Screen.Resumen.route,
-            arguments = listOf(navArgument("pruebaId") { type = NavType.IntType })
-        ) {
-            PantallaTemporal(
-                titulo = "Resumen",
-                acciones = listOf(
-                    "Volver a la ficha" to {
-                        navController.popBackStack(Screen.FichaEquipo.route, false)
-                    },
-                    "Ir a la lista de equipos" to {
-                        navController.navigate(Screen.ListaEquipos.createRoute(false)) {
-                            popUpTo(Screen.Inicio.route)
-                        }
-                    }
-                )
-            )
-        }
     }
 }
