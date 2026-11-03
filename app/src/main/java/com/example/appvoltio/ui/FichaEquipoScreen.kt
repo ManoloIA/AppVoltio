@@ -31,6 +31,7 @@ fun FichaEquipoScreen(
 ) {
     val equipo by viewModel.equipo.collectAsState()
     val pruebas by viewModel.pruebas.collectAsState()
+    val comparacion by viewModel.comparacion.collectAsState()
 
     Column(
         modifier = Modifier
@@ -71,6 +72,29 @@ fun FichaEquipoScreen(
                             )
                         }
                     }
+                }
+            }
+        }
+
+        comparacion?.let { c ->
+            val signo = if (c.diferencia > 0) "+" else ""
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "Comparación con la prueba anterior",
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Text(
+                        text = "Anterior (${c.anterior.fecha}): ${c.anterior.valorMedicion} ${c.anterior.unidad}"
+                    )
+                    Text(
+                        text = "Actual (${c.actual.fecha}): ${c.actual.valorMedicion} ${c.actual.unidad}"
+                    )
+                    Text(
+                        text = "Diferencia: $signo${c.diferencia} ${c.actual.unidad}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }
