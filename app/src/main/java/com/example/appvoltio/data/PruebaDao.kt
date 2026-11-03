@@ -12,6 +12,6 @@ interface PruebaDao {
     @Insert
     suspend fun insertar(prueba: Prueba)
 
-    @Query("SELECT * FROM prueba WHERE equipoId = :equipoId ORDER BY fecha DESC, hora DESC")
+    @Query("SELECT * FROM prueba WHERE equipoId = :equipoId ORDER BY fecha DESC, hora DESC, id DESC")
     fun observarPorEquipo(equipoId: Int): Flow<List<Prueba>>
 }
