@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import com.example.appvoltio.ui.components.CampoClave
 import com.example.appvoltio.viewmodel.LoginViewModel
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.size
+import com.example.appvoltio.ui.components.IconoRayoAnimado
 
 @Composable
 fun LoginScreen(
@@ -41,7 +43,9 @@ fun LoginScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally
+
     ) {
+        IconoRayoAnimado(modifier = Modifier.size(72.dp))
         Text(
             text = "AppVoltio",
             style = MaterialTheme.typography.headlineLarge
