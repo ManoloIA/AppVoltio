@@ -13,7 +13,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.appvoltio.ui.RegistroEquipoScreen
-import com.example.appvoltio.ui.components.PantallaTemporal
 import com.example.appvoltio.viewmodel.RegistroEquipoViewModel
 import com.example.appvoltio.ui.ListaEquiposScreen
 import com.example.appvoltio.viewmodel.ListaEquiposViewModel
@@ -26,6 +25,7 @@ import com.example.appvoltio.viewmodel.CrearUsuarioViewModelFactory
 import com.example.appvoltio.ui.FichaEquipoScreen
 import com.example.appvoltio.viewmodel.FichaEquipoViewModel
 import com.example.appvoltio.viewmodel.FichaEquipoViewModelFactory
+import com.example.appvoltio.ui.InicioScreen
 
 @Composable
 fun AppNavigation(
@@ -52,28 +52,27 @@ fun AppNavigation(
         composable(
             route = Screen.Inicio.route,
             arguments = listOf(navArgument("esAdmin") { type = NavType.BoolType })
-        ) {
-            PantallaTemporal(
-                titulo = "Inicio",
-                acciones = listOf(
-                    "Buscar un equipo" to {
-                        navController.navigate(Screen.ListaEquipos.createRoute(false))
-                    },
-                    "Registrar un equipo" to {
-                        navController.navigate(Screen.RegistrarEquipo.route)
-                    },
-                    "Nueva prueba" to {
-                        navController.navigate(Screen.ListaEquipos.createRoute(true))
-                    },
-                    "Crear usuario" to {
-                        navController.navigate(Screen.CrearUsuario.route)
-                    },
-                    "Cerrar sesión" to {
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Inicio.route) { inclusive = true }
-                        }
+        ) { backStackEntry ->
+            val esAdmin = backStackEntry.arguments?.getBoolean("esAdmin") ?: false
+            InicioScreen(
+                esAdmin = esAdmin,
+                onBuscarEquipo = {
+                    navController.navigate(Screen.ListaEquipos.createRoute(false))
+                },
+                onRegistrarEquipo = {
+                    navController.navigate(Screen.RegistrarEquipo.route)
+                },
+                onNuevaPrueba = {
+                    navController.navigate(Screen.ListaEquipos.createRoute(true))
+                },
+                onCrearUsuario = {
+                    navController.navigate(Screen.CrearUsuario.route)
+                },
+                onCerrarSesion = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Inicio.route) { inclusive = true }
                     }
-                )
+                }
             )
         }
 
