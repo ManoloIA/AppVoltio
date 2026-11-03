@@ -20,13 +20,14 @@ Navigation Compose y Coil.
 * Usuario administrador creado automáticamente al iniciar la app por primera vez.
 * Creación de usuarios técnicos (solo administrador), con validación por campo,
   confirmación de contraseña y control de usuario duplicado.
+* Pantalla de inicio según el rol: solo el administrador ve la opción Crear usuario.
 * Registro de equipos con validación por campo (ícono y mensaje de error).
 * Foto de la placa del equipo con la cámara del dispositivo.
 * Ubicación del equipo con el GPS del dispositivo.
 * Lista de equipos con búsqueda por código o ubicación.
-* Ficha del equipo con sus datos, foto, ubicación GPS e historial de pruebas.
+* Ficha del equipo con sus datos, foto, ubicación GPS, historial de pruebas y comparación con la prueba anterior.
 * Registro de pruebas eléctricas con fecha, hora, valor de medición, unidad y observaciones.
-* Animaciones en mensajes de error, mensajes de éxito y listas.
+* Animaciones en mensajes de error, mensajes de éxito, listas e ícono animado en el inicio de sesión.
 * Tema Material 3 con modo claro y oscuro.
 
 ## Recursos nativos
