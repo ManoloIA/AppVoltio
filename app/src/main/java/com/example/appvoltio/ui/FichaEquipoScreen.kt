@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -27,7 +28,8 @@ import com.example.appvoltio.viewmodel.FichaEquipoViewModel
 @Composable
 fun FichaEquipoScreen(
     viewModel: FichaEquipoViewModel,
-    onNuevaPrueba: () -> Unit
+    onNuevaPrueba: () -> Unit,
+    onEliminado: () -> Unit
 ) {
     val equipo by viewModel.equipo.collectAsState()
     val pruebas by viewModel.pruebas.collectAsState()
@@ -134,6 +136,13 @@ fun FichaEquipoScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Nueva prueba")
+        }
+
+        OutlinedButton(
+            onClick = { viewModel.eliminar(onEliminado) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Eliminar equipo", color = MaterialTheme.colorScheme.error)
         }
     }
 }

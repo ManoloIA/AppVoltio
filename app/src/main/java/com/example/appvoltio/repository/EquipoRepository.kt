@@ -14,5 +14,10 @@ class EquipoRepository(private val equipoDao: EquipoDao) {
         return equipoDao.obtenerTodos()
     }
 
+    suspend fun eliminar(equipo: Equipo) {
+        equipoDao.eliminar(equipo)
+    }
+
     fun equipoPorId(id: Int): Flow<Equipo?> = equipoDao.observarPorId(id)
 }
+
