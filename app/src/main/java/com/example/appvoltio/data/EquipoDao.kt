@@ -14,4 +14,8 @@ interface EquipoDao {
 
     @Query("SELECT * FROM equipo WHERE id = :id")
     fun observarPorId(id: Int): Flow<Equipo?>
+
+    @Delete
+    suspend fun eliminar(equipo: Equipo)
 }
+
