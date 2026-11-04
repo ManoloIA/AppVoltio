@@ -17,6 +17,7 @@ private val LightColorScheme = lightColorScheme(
     background = FondoClaro,
     surface = SuperficieClara,
     surfaceVariant = SuperficieVarianteClara,
+    surfaceContainerHighest = AzulVoltioContenedor,
     onSurfaceVariant = TextoSecundarioClaro,
     error = ErrorClaro
 )
@@ -29,6 +30,7 @@ private val DarkColorScheme = darkColorScheme(
     background = FondoOscuro,
     surface = SuperficieOscura,
     surfaceVariant = SuperficieVarianteOscura,
+    surfaceContainerHighest = SuperficieVarianteOscura,
     onSurfaceVariant = TextoSecundarioOscuro,
     error = ErrorOscuro
 )
