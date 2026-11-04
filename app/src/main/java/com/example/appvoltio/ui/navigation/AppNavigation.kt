@@ -125,9 +125,10 @@ fun AppNavigation(
             )
             FichaEquipoScreen(
                 viewModel = fichaEquipoViewModel,
-                onNuevaPrueba = {
+                                onNuevaPrueba = {
                     navController.navigate(Screen.NuevaPrueba.createRoute(equipoId))
-                }
+                },
+                onEliminado = { navController.popBackStack() }
             )
         }
 

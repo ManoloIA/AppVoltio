@@ -11,10 +11,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class FichaEquipoViewModel(
     equipoId: Int,
-    equipoRepository: EquipoRepository,
+    private val equipoRepository: EquipoRepository,
     pruebaRepository: PruebaRepository
 ) : ViewModel() {
 
@@ -27,6 +28,14 @@ class FichaEquipoViewModel(
     val comparacion: StateFlow<ComparacionPrueba?> = pruebas
         .map { calcularComparacion(it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    fun eliminar(alEliminar: () -> Unit) {
+        val actual = equipo.value ?: return
+        viewModelScope.launch {
+            equipoRepository.eliminar(actual)
+            alEliminar()
+        }
+    }
 
     private fun calcularComparacion(lista: List<Prueba>): ComparacionPrueba? {
         val actual = lista.firstOrNull() ?: return null
