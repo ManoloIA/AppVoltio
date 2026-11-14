@@ -26,6 +26,8 @@ import com.example.appvoltio.ui.FichaEquipoScreen
 import com.example.appvoltio.viewmodel.FichaEquipoViewModel
 import com.example.appvoltio.viewmodel.FichaEquipoViewModelFactory
 import com.example.appvoltio.ui.InicioScreen
+import com.example.appvoltio.ui.PostScreen
+import com.example.appvoltio.viewmodel.PostViewModel
 
 @Composable
 fun AppNavigation(
@@ -68,6 +70,7 @@ fun AppNavigation(
                 onCrearUsuario = {
                     navController.navigate(Screen.CrearUsuario.route)
                 },
+                onVerPosts = { navController.navigate(Screen.Posts.route) },
                 onCerrarSesion = {
                     navController.navigate(Screen.Login.route) {
                         popUpTo(Screen.Inicio.route) { inclusive = true }
@@ -92,6 +95,11 @@ fun AppNavigation(
                 viewModel = registroEquipoViewModel,
                 onGuardado = { navController.popBackStack() }
             )
+        }
+
+        composable(Screen.Posts.route) {
+            val postViewModel: PostViewModel = viewModel()
+            PostScreen(viewModel = postViewModel)
         }
 
         composable(

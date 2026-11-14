@@ -22,6 +22,7 @@ fun InicioScreen(
     onRegistrarEquipo: () -> Unit,
     onNuevaPrueba: () -> Unit,
     onCrearUsuario: () -> Unit,
+    onVerPosts: () -> Unit,
     onCerrarSesion: () -> Unit
 ) {
     Column(
@@ -54,6 +55,12 @@ fun InicioScreen(
             titulo = "Nueva prueba",
             descripcion = "Elige el equipo y registra la medición",
             onClick = onNuevaPrueba
+        )
+        TarjetaAccion(
+            titulo = "Posts de la API",
+            descripcion = "Consulta los posts desde la API REST",
+            onClick = onVerPosts
+
         )
 
         if (esAdmin) {

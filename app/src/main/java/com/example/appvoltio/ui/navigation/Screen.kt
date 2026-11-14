@@ -8,6 +8,8 @@ sealed class Screen(val route: String) {
     object CrearUsuario : Screen("crear_usuario")
     object RegistrarEquipo : Screen("registrar_equipo")
 
+    object Posts : Screen("posts")
+
 
     object ListaEquipos : Screen("lista_equipos/{seleccionar}") {
         fun createRoute(seleccionar: Boolean) = "lista_equipos/$seleccionar"
